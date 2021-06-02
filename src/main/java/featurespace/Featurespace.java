@@ -1,58 +1,34 @@
 package featurespace;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Featurespace {
 
-    private static final int MAX_ITEMS = 5;
-    private static String top5customersHighestAve[] = new String[MAX_ITEMS];
-    private static String top5merchantsHighestAve[] = new String[MAX_ITEMS];
-    private static String top5customersGreatestBalance[] = new String[MAX_ITEMS];
-    private static String top5merchantsShortestTime[] = new String[MAX_ITEMS];
+    public static final int MAX_ITEMS = 5;
+    public static String top5customersHighestAve[] = new String[MAX_ITEMS];
+    public static String top5merchantsHighestAve[] = new String[MAX_ITEMS];
+    public static String top5customersGreatestBalance[] = new String[MAX_ITEMS];
+    public static String top5merchantsShortestTime[] = new String[MAX_ITEMS];
  
-    private static HashMap<String,Merchant> merchantsStore;
-    private static HashMap<String,Customer> customersStore;
+    public static HashMap<String,Merchant> merchantsStore;
+    public static HashMap<String,Customer> customersStore;
  
-    public class CustomDateDeserializer extends StdDeserializer<Date> {
-
-        public CustomDateDeserializer() {
-            this(null);
-        }
-
-        public CustomDateDeserializer(Class<?> vc) {
-            super(vc);
-        }
-
-        @Override
-        public Date deserialize(JsonParser jsonparser, DeserializationContext context)
-          throws IOException, JsonProcessingException {
-            String date = jsonparser.getText();
-            try {
-                return Date.from( Instant.parse( date));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-    public static void main(String[] args) throws Exception{
+     
+    public static void runner() throws Exception{
         Event[] events = null;
         try {
-            // create object mapper instance
             ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             // convert JSON string to Event[] object
             events = mapper.readValue(Paths.get("events.json").toFile(), Event[].class);
@@ -108,7 +84,10 @@ public class Featurespace {
             } else throw new RuntimeException("Unknown event"+events[i].toString());
         }
         
-        List<Customer> tempCustomers = (List<Customer>) customersStore.values();
+        List<Customer> tempCustomers = new ArrayList<Customer>();
+        for (Customer item :customersStore.values()) {
+            tempCustomers.add(item);
+        }
         Collections.sort(tempCustomers, new Comparator<Customer>() {
 
             @Override
@@ -122,12 +101,15 @@ public class Featurespace {
             }
             
         });
-        for (int i = 0; i < MAX_ITEMS && i < tempCustomers.size(); i++) {
-            top5customersHighestAve[i] = tempCustomers.get(i).getCustomerId();
-            System.out.println("Customer["+tempCustomers.get(i).getCustomerId()+"]"
-                    + " Running Average = " + tempCustomers.get(i).getRunningAverage());
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            top5customersHighestAve[i] = i < tempCustomers.size()?tempCustomers.get(i).getCustomerId():null;
+            System.out.println("Customer["+(i < tempCustomers.size()?tempCustomers.get(i).getCustomerId():null)+"]"
+                    + " Running Average = " + (i < tempCustomers.size()?tempCustomers.get(i).getRunningAverage():null));
         }        
-        List<Merchant> tempMerchants = (List<Merchant>) merchantsStore.values();
+        List<Merchant> tempMerchants = new ArrayList<Merchant>();
+        for (Merchant item :merchantsStore.values()) {
+            tempMerchants.add(item);
+        }
         Collections.sort(tempMerchants, new Comparator<Merchant>() {
 
             @Override
@@ -140,10 +122,10 @@ public class Featurespace {
                 return 0;
             }
         });
-        for (int i = 0; i < MAX_ITEMS && i < tempMerchants.size(); i++) {
-            top5merchantsHighestAve[i] = tempMerchants.get(i).getMerchantId();
-            System.out.println("Merchant["+tempMerchants.get(i).getMerchantId()+"]"
-                    + " Running Average = " + tempMerchants.get(i).getRunningAverage());
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            top5merchantsHighestAve[i] = i < tempMerchants.size()?tempMerchants.get(i).getMerchantId():null;
+            System.out.println("Merchant["+(i < tempMerchants.size()?tempMerchants.get(i).getMerchantId():null)+"]"
+                    + " Running Average = " + (i < tempMerchants.size()?tempMerchants.get(i).getRunningAverage():null));
         }
         Collections.sort(tempCustomers, new Comparator<Customer>() {
 
@@ -158,10 +140,10 @@ public class Featurespace {
             }
             
         });
-        for (int i = 0; i < MAX_ITEMS && i < tempCustomers.size(); i++) {
-            top5customersGreatestBalance[i] = tempCustomers.get(i).getCustomerId();
-            System.out.println("Customer["+tempCustomers.get(i).getCustomerId()+"]"
-                    + " Balance = " + tempCustomers.get(i).getAmount());
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            top5customersGreatestBalance[i] = i < tempCustomers.size()?tempCustomers.get(i).getCustomerId():null;
+            System.out.println("Customer["+(i < tempCustomers.size()?tempCustomers.get(i).getCustomerId():null)+"]"
+                    + " Balance = " + (i < tempCustomers.size()?tempCustomers.get(i).getAmount():null));
         } 
         Collections.sort(tempMerchants, new Comparator<Merchant>() {
 
@@ -175,12 +157,16 @@ public class Featurespace {
                 return 0;
             }
         });
-        for (int i = 0; i < MAX_ITEMS && i < tempMerchants.size() && tempMerchants.get(i).isSevenExceeded(); i++) {
-            top5merchantsShortestTime[i] = tempMerchants.get(i).getMerchantId();
-            System.out.println("Merchant["+tempMerchants.get(i).getMerchantId()+"]"
-                    + " getMinTime().getTime() (milliseconds) = " + tempMerchants.get(i).getMinTime().getTime());
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            top5merchantsShortestTime[i] = i < tempMerchants.size() && tempMerchants.get(i).isSevenExceeded()?tempMerchants.get(i).getMerchantId():null;
+            System.out.println("Merchant["+(i < tempMerchants.size() && tempMerchants.get(i).isSevenExceeded()?tempMerchants.get(i).getMerchantId():null)+"]"
+                    + " getMinTime().getTime() (milliseconds) = " + (i < tempMerchants.size() && tempMerchants.get(i).isSevenExceeded()?tempMerchants.get(i).getMinTime().getTime():null));
         }
 
 
     }
+    public static void main(String[] args) throws Exception{
+        runner();
+    }
+
 }

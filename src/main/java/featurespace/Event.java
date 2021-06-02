@@ -4,8 +4,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import featurespace.Featurespace.CustomDateDeserializer;
-
 public class Event {
 
     private String eventType;

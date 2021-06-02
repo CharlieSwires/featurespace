@@ -6,10 +6,10 @@ import java.util.Date;
 public class Merchant {
     private static final int MIN_LIST = 7;
     private String merchantId;
-    private Double amount;
+    private Double amount = 0.0;
     private Date[] time = new Date[MIN_LIST]; // Cyclic list
     private int timeIndexLast = 0;
-    private Date minTime = Date.from(Instant.MAX);
+    private Date minTime = Date.from(Instant.parse("4000-06-02T14:20:56.000Z"));
     private boolean sevenExceeded = false;
     private Double runningTotal = 0.0;
     private Double runningAverage = 0.0;
@@ -51,7 +51,7 @@ public class Merchant {
            timeIndexLast++;
            sevenExceeded = true;
            timeIndexLast = 0;
-           for(int i = 0; i < 4;i++) {
+           for(int i = 0; i < 3;i++) {
                if (minTime.getTime() > this.time[i+4].getTime() - this.time[i].getTime()) {
                    minTime = new Date(this.time[i+4].getTime() - this.time[i].getTime());
                }

@@ -2,7 +2,7 @@ package featurespace;
 
 public class Customer {
     private String customerId;
-    private Double amount;
+    private Double amount = 0.0;
     private Double runningTotal = 0.0;
     private Double runningAverage = 0.0;
     private int numberOfTransactions =0;

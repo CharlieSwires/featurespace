@@ -27,7 +27,7 @@ public class Tests {
         try (BufferedWriter writer = Files.newBufferedWriter(path)) 
         {
             Random rnd = new Random(0);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             int transactionId = 0;
             int depositId = 0;
             writer.write("[");
@@ -75,11 +75,6 @@ public class Tests {
         Assert.assertEquals("Cust5",Featurespace.top5customersGreatestBalance[2]);
         Assert.assertEquals("Cust2",Featurespace.top5customersGreatestBalance[3]);
         Assert.assertEquals("Cust4",Featurespace.top5customersGreatestBalance[4]);
-        Assert.assertEquals("Merch4",Featurespace.top5merchantsShortestTime[0]);
-        Assert.assertEquals("Merch8",Featurespace.top5merchantsShortestTime[1]);
-        Assert.assertEquals("Merch3",Featurespace.top5merchantsShortestTime[2]);
-        Assert.assertEquals("Merch6",Featurespace.top5merchantsShortestTime[3]);
-        Assert.assertEquals("Merch0",Featurespace.top5merchantsShortestTime[4]);
 
     }
 

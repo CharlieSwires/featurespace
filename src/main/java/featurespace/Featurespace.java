@@ -38,8 +38,6 @@ public class Featurespace {
             ex.printStackTrace();
             throw ex;
         }  
-        // print events
-        System.out.println(events);
 
         merchantsStore = new HashMap<>();
         customersStore = new HashMap<>();
